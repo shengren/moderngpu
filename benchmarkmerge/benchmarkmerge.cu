@@ -61,13 +61,13 @@ void BenchmarkMergeKeys(int count, int numIt, CudaContext& context) {
 	for(int it = 0; it < numIt; ++it)
 		MergeKeys(a->get(), aCount, b->get(), bCount, c->get(), context);
 	double mgpuElapsed = context.Split();
-        printf("MGPU Elapsed: %.3lf\n", mgpuElapsed);
+        printf("MGPU Elapsed: %lf\n", mgpuElapsed);
 
 	// Benchmark STL
 	std::merge(aHost.begin(), aHost.end(), bHost.begin(), bHost.end(),
 		cHost.begin());
 	double cpuElapsed = context.Split();
-        printf("CPU Elapsed: %.3lf\n", cpuElapsed);
+        printf("CPU Elapsed: %lf\n", cpuElapsed);
 
 	// Compare MGPU to STL.
 	std::vector<T> cHost2;
@@ -85,7 +85,7 @@ void BenchmarkMergeKeys(int count, int numIt, CudaContext& context) {
 	double cpuThroughput = count / cpuElapsed;
 	double cpuBandwidth = bytes / cpuElapsed;
 
-	printf("%s: %9.3lf M/s  %7.3lf GB/s   %9.3lf M/s  %7.3lf GB/s\n",
+	printf("%s: MGPU %9.3lf M/s  %7.3lf GB/s  CPU %9.3lf M/s  %7.3lf GB/s\n",
 		FormatInteger(count).c_str(),
 		mgpuThroughput / 1.0e6, mgpuBandwidth / 1.0e9,
 		cpuThroughput / 1.0e6, cpuBandwidth / 1.0e9);
@@ -121,13 +121,13 @@ void BenchmarkMergePairs(int count, int numIt, CudaContext& context) {
 			bVals->get(), bCount, cKeys->get(), cVals->get(),
 			mgpu::less<KeyType>(), context);
 	double mgpuElapsed = context.Split();
-        printf("MGPU Elapsed: %.3lf\n", mgpuElapsed);
+        printf("MGPU Elapsed: %lf\n", mgpuElapsed);
 
 	double bytes = 2 * (sizeof(KeyType)  + sizeof(ValType)) * count;
 	double mgpuThroughput = count * numIt / mgpuElapsed;
 	double mgpuBandwidth = bytes * numIt / mgpuElapsed;
 
-	printf("%s: %9.3lf M/s  %7.3lf GB/s\n",
+	printf("%s: MGPU %9.3lf M/s  %7.3lf GB/s\n",
 		FormatInteger(count).c_str(),
 		mgpuThroughput / 1.0e6, mgpuBandwidth / 1.0e9);
 
